@@ -25,11 +25,13 @@
             </div>
             <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl">
                 <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Current Pool Hashrate</p>
-                <p class="text-3xl font-mono font-bold mt-1 text-amber-500">402.4 TH/s</p>
+                <!-- Added an 'id' tag so Javascript can find and change this number -->
+                <p id="hashrate-display" class="text-3xl font-mono font-bold mt-1 text-amber-500">400.0 TH/s</p>
             </div>
             <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl">
                 <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Fund Balance</p>
-                <p class="text-3xl font-mono font-bold mt-1 text-green-400">0.01428 BTC</p>
+                <!-- Added an 'id' tag so Javascript can add crypto to this balance -->
+                <p id="balance-display" class="text-3xl font-mono font-bold mt-1 text-green-400">0.01428000 BTC</p>
             </div>
         </div>
 
@@ -60,5 +62,35 @@
             </div>
         </div>
     </div>
+
+    <!-- LIVE ANIMATION JAVASCRIPT SECTION -->
+    <script>
+        // Set the baseline internal values
+        let currentBalance = 0.01428000;
+
+        // 1. Function to fluctuate Hashrate slightly (simulating real pool variance)
+        function updateHashrate() {
+            // Generates a random slight swing between -8 TH/s and +8 TH/s
+            let fluctuation = (Math.random() * 16) - 8; 
+            let liveHash = (400 + fluctuation).toFixed(1);
+            
+            // Updates the UI text elements
+            document.getElementById('hashrate-display').innerText = liveHash + " TH/s";
+        }
+
+        // 2. Function to add mined Satoshis to the screen balance smoothly
+        function updateBalance() {
+            // Adds a tiny fraction of a Bitcoin every few seconds
+            let minedAmount = 0.00000003; 
+            currentBalance += minedAmount;
+            
+            // Updates the UI text element with precise 8 decimal spots
+            document.getElementById('balance-display').innerText = currentBalance.toFixed(8) + " BTC";
+        }
+
+        // Trigger updates automatically at set intervals
+        setInterval(updateHashrate, 3000);  // Changes hashrate every 3 seconds
+        setInterval(updateBalance, 5000);   // Accumulates Bitcoin balance every 5 seconds
+    </script>
 </body>
 </html>

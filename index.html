@@ -3,94 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Mining Fund - Watcher Link</title>
-    <script src="https://tailwindcss.com"></script>
+    <title>Alpha Fund | Investor Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom "Cyberpunk" Gradient Background */
+        body {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            color: #e2e8f0;
+        }
+        /* "Glassmorphism" Card Style */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Neon Glow Animation */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px #f59e0b; }
+            50% { box-shadow: 0 0 20px #f59e0b; }
+        }
+        .neon-text { text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+    </style>
 </head>
-<body class="bg-gray-950 text-gray-100 font-sans p-6">
-    <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="flex justify-between items-center border-b border-gray-800 pb-4 mb-6">
+<body class="min-h-screen p-4 md:p-8 font-sans">
+
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- HEADER -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center glass-card p-6 rounded-2xl">
             <div>
-                <h1 class="text-2xl font-bold text-amber-500">Alpha Mining Fund</h1>
-                <p class="text-xs text-gray-400">Secure Investor Watcher Portal (Read-Only)</p>
+                <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 neon-text">
+                    Alpha Mining Fund
+                </h1>
+                <p class="text-sm text-gray-400 mt-1">Live Investor Watcher Node • <span class="text-green-400">v2.4.1 Stable</span></p>
             </div>
-            <span class="bg-green-500/10 text-green-400 text-xs px-3 py-1 rounded-full border border-green-500/20 font-mono animate-pulse">● Pool Connected</span>
-        </div>
-
-        <!-- Metric Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl">
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Active Workers</p>
-                <p class="text-3xl font-mono font-bold mt-1 text-white">2 / 2 <span class="text-xs text-gray-500">(S21 Air)</span></p>
-            </div>
-            <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl">
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Current Pool Hashrate</p>
-                <!-- Added an 'id' tag so Javascript can find and change this number -->
-                <p id="hashrate-display" class="text-3xl font-mono font-bold mt-1 text-amber-500">400.0 TH/s</p>
-            </div>
-            <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl">
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Fund Balance</p>
-                <!-- Added an 'id' tag so Javascript can add crypto to this balance -->
-                <p id="balance-display" class="text-3xl font-mono font-bold mt-1 text-green-400">0.01428000 BTC</p>
-            </div>
-        </div>
-
-        <!-- Safety Notice -->
-        <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 mb-6 text-sm text-blue-300">
-            <strong>Manager Security Guardrail:</strong> This token link is cryptographically locked to <strong>Read-Only</strong> permissions. Wallet modifications, password resets, and strategic pool settings are disabled for this session.
-        </div>
-
-        <!-- Mock Ledger -->
-        <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <h3 class="text-sm font-semibold text-gray-300 mb-3">Recent Automated Payouts</h3>
-            <div class="space-y-2 font-mono text-xs">
-                <div class="flex justify-between border-b border-gray-800 pb-2">
-                    <span class="text-gray-400">2026-08-07 00:05 UTC</span>
-                    <span class="text-gray-400">Distribution Credit</span>
-                    <span class="text-green-400 font-bold">+0.00214 BTC</span>
-                </div>
-                <div class="flex justify-between border-b border-gray-800 pb-2">
-                    <span class="text-gray-400">2026-08-06 00:05 UTC</span>
-                    <span class="text-gray-400">Distribution Credit</span>
-                    <span class="text-green-400 font-bold">+0.00209 BTC</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-400">2026-08-05 00:05 UTC</span>
-                    <span class="text-gray-400">Distribution Credit</span>
-                    <span class="text-green-400 font-bold">+0.00211 BTC</span>
+            <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                <div class="flex items-center space-x-2 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-full">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    <span class="text-xs font-bold text-green-400 uppercase tracking-wider">System Online</span>
                 </div>
             </div>
         </div>
+
+        <!-- MAIN STATS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Card 1 -->
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Active Fleet</p>
+                <div class="mt-2 flex items-baseline space-x-2">
+                    <span class="text-3xl font-bold text-white">2 <span class="text-lg text-gray-500">/ 2</span></span>
+                </div>
+                <p class="text-xs text-emerald-400 mt-2 flex items-center">
+                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    100% Uptime (24h)
+                </p>
+            </div>
+
+            <!-- Card 2: Hashrate -->
+            <div class="glass-card p-6 rounded-2xl">
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Real-Time Hashrate</p>
+                <div class="mt-2">
+                    <span id="hashrate-display" class="text-3xl font-bold text-amber-400 font-mono">Loading...</span>
+                </div>
+                <!-- Animated Progress Bar -->
+                <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 h-1.5 rounded-full" style="width: 92%; animation: pulse-width 2s infinite;"></div>
+                </div>
+            </div>
+
+            <!-- Card 3: Balance (The Money) -->
+            <div class="glass-card p-6 rounded-2xl border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Total Fund Equity</p>
+                <div class="mt-2">
+                    <span id="balance-display" class="text-3xl font-bold text-white font-mono tracking-tight">0.00000000</span>
+                    <span class="text-sm text-gray-500 ml-1">BTC</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Next payout: <span id="next-payout-timer">04:59</span></p>
+            </div>
+        </div>
+
+        <!-- PAYOUT HISTORY TABLE -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-gray-700/50 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-gray-200">Payout Ledger</h3>
+                <button onclick="resetSimulation()" class="text-xs text-red-400/50 hover:text-red-400 transition">Reset Demo</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-400">
+                    <thead class="bg-gray-800/50 uppercase text-xs font-semibold text-gray-500">
+                        <tr>
+                            <th class="px-6 py-3">Timestamp (UTC)</th>
+                            <th class="px-6 py-3">Type</th>
+                            <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3 text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payout-table-body" class="divide-y divide-gray-700/30">
+                        <!-- Rows will be injected here by Javascript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
-    <!-- LIVE ANIMATION JAVASCRIPT SECTION -->
+    <!-- THE "MEMORY ENGINE" SCRIPT -->
     <script>
-        // Set the baseline internal values
-        let currentBalance = 0.01428000;
+        // --- CONFIGURATION ---
+        // 1. Set the starting date for your "fake" history
+        const START_DATE = new Date(); 
+        START_DATE.setDate(START_DATE.getDate() - 5); // Start 5 days ago
 
-        // 1. Function to fluctuate Hashrate slightly (simulating real pool variance)
-        function updateHashrate() {
-            // Generates a random slight swing between -8 TH/s and +8 TH/s
-            let fluctuation = (Math.random() * 16) - 8; 
-            let liveHash = (400 + fluctuation).toFixed(1);
-            
-            // Updates the UI text elements
-            document.getElementById('hashrate-display').innerText = liveHash + " TH/s";
+        // 2. Define the "base" balance to start with if it's a new user
+        const INITIAL_BALANCE = 0.01428000;
+        
+        // --- MEMORY SYSTEM (LocalStorage) ---
+        
+        // Load Balance from Memory (or use default)
+        let savedBalance = localStorage.getItem('alphaFundBalance');
+        let currentBalance = savedBalance ? parseFloat(savedBalance) : INITIAL_BALANCE;
+
+        // Load Payout History from Memory (or create default)
+        let savedHistory = localStorage.getItem('alphaFundHistory');
+        let payoutHistory = savedHistory ? JSON.parse(savedHistory) : generateDefaultHistory();
+
+        // --- FUNCTIONS ---
+
+        // 1. Generate Fake History (Only runs on first visit)
+        function generateDefaultHistory() {
+            let history = [];
+            for(let i=0; i<5; i++) {
+                let d = new Date();
+                d.setDate(d.getDate() - i);
+                history.push({
+                    date: d.toISOString().split('T')[0] + " 00:05:00",
+                    amount: (0.00210 + (Math.random() * 0.00010)).toFixed(8)
+                });
+            }
+            return history;
         }
 
-        // 2. Function to add mined Satoshis to the screen balance smoothly
-        function updateBalance() {
-            // Adds a tiny fraction of a Bitcoin every few seconds
-            let minedAmount = 0.00000003; 
-            currentBalance += minedAmount;
+        // 2. Render the Table
+        function renderTable() {
+            const tbody = document.getElementById('payout-table-body');
+            tbody.innerHTML = ''; // Clear current rows
             
-            // Updates the UI text element with precise 8 decimal spots
-            document.getElementById('balance-display').innerText = currentBalance.toFixed(8) + " BTC";
+            payoutHistory.forEach(row => {
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-white/5 transition";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-xs">${row.date}</td>
+                    <td class="px-6 py-4"><span class="bg-blue-500/10 text-blue-400 px-2 py-1 rounded text-xs border border-blue-500/20">Mining Reward</span></td>
+                    <td class="px-6 py-4 text-green-400 text-xs font-bold">Confirmed</td>
+                    <td class="px-6 py-4 text-right font-mono text-white font-bold">+${row.amount} BTC</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        // Trigger updates automatically at set intervals
-        setInterval(updateHashrate, 3000);  // Changes hashrate every 3 seconds
-        setInterval(updateBalance, 5000);   // Accumulates Bitcoin balance every 5 seconds
+        // 3. Save Everything to Phone Memory
+        function saveData() {
+            localStorage.setItem('alphaFundBalance', currentBalance.toFixed(8));
+            localStorage.setItem('alphaFundHistory', JSON.stringify(payoutHistory));
+        }
+
+        // 4. Live Updates (The "Moving Digits")
+        function updateLoop() {
+            // A. Wiggle the Hashrate
+            let wobble = (Math.random() * 10) - 5;
+            let currentHash = (400 + wobble).toFixed(1);
+            document.getElementById('hashrate-display').innerText = currentHash + " TH/s";
+
+            // B. Tick the Balance Up (Tiny amounts constantly)
+            currentBalance += 0.00000001; 
+            document.getElementById('balance-display').innerText = currentBalance.toFixed(8);
+            
+            // Save every tick so refresh remembers exactly where it was
+            saveData();
+        }
+
+        // 5. Simulate a "Big Payout" every 60 seconds (for demo purposes)
+        setInterval(() => {
+            let newAmount = (0.00210 + (Math.random() * 0.00010)).toFixed(8);
+            let now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            
+            // Add to top of history
+            payoutHistory.unshift({ date: now, amount: newAmount });
+            
+            // Keep list clean (max 10 rows)
+            if(payoutHistory.length > 10) payoutHistory.pop();
+            
+            // Add big chunk to balance
+            currentBalance += parseFloat(newAmount);
+            
+            renderTable();
+            saveData();
+        }, 60000); // Runs every 60 seconds
+
+        // --- INIT ---
+        renderTable(); // Show table immediately
+        setInterval(updateLoop, 2000); // Update numbers every 2s
+
+        // Helper to reset if you want to show a different friend from scratch
+        window.resetSimulation = function() {
+            localStorage.clear();
+            location.reload();
+        }
     </script>
 </body>
 </html>

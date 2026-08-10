@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alpha Fund | Investor Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://tailwindcss.com"></script>
     <style>
-        /* Custom "Cyberpunk" Gradient Background */
         body {
             background-color: #0f172a;
             background-image: 
@@ -15,17 +14,11 @@
                 radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
             color: #e2e8f0;
         }
-        /* "Glassmorphism" Card Style */
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        /* Neon Glow Animation */
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 5px #f59e0b; }
-            50% { box-shadow: 0 0 20px #f59e0b; }
         }
         .neon-text { text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
     </style>
@@ -55,34 +48,24 @@
 
         <!-- MAIN STATS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <!-- Card 1 -->
             <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
-                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                </div>
                 <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Active Fleet</p>
                 <div class="mt-2 flex items-baseline space-x-2">
                     <span class="text-3xl font-bold text-white">2 <span class="text-lg text-gray-500">/ 2</span></span>
                 </div>
-                <p class="text-xs text-emerald-400 mt-2 flex items-center">
-                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    100% Uptime (24h)
-                </p>
+                <p class="text-xs text-emerald-400 mt-2 flex items-center">● 100% Uptime (24h)</p>
             </div>
 
-            <!-- Card 2: Hashrate -->
             <div class="glass-card p-6 rounded-2xl">
                 <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Real-Time Hashrate</p>
                 <div class="mt-2">
                     <span id="hashrate-display" class="text-3xl font-bold text-amber-400 font-mono">Loading...</span>
                 </div>
-                <!-- Animated Progress Bar -->
                 <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4 overflow-hidden">
-                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 h-1.5 rounded-full" style="width: 92%; animation: pulse-width 2s infinite;"></div>
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 h-1.5 rounded-full" style="width: 92%;"></div>
                 </div>
             </div>
 
-            <!-- Card 3: Balance (The Money) -->
             <div class="glass-card p-6 rounded-2xl border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
                 <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Total Fund Equity</p>
                 <div class="mt-2">
@@ -97,7 +80,8 @@
         <div class="glass-card rounded-2xl overflow-hidden">
             <div class="p-6 border-b border-gray-700/50 flex justify-between items-center">
                 <h3 class="font-bold text-lg text-gray-200">Payout Ledger</h3>
-                <button onclick="resetSimulation()" class="text-xs text-red-400/50 hover:text-red-400 transition">Reset Demo</button>
+                <!-- Added id="admin-reset" and hidden style by default -->
+                <button id="admin-reset" onclick="resetSimulation()" class="hidden text-xs text-red-400/50 hover:text-red-400 transition bg-red-500/10 px-2 py-1 rounded border border-red-500/20">Reset Demo</button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-gray-400">
@@ -109,56 +93,42 @@
                             <th class="px-6 py-3 text-right">Amount</th>
                         </tr>
                     </thead>
-                    <tbody id="payout-table-body" class="divide-y divide-gray-700/30">
-                        <!-- Rows will be injected here by Javascript -->
-                    </tbody>
+                    <tbody id="payout-table-body" class="divide-y divide-gray-700/30"></tbody>
                 </table>
             </div>
         </div>
 
     </div>
 
-    <!-- THE "MEMORY ENGINE" SCRIPT -->
     <script>
-        // --- CONFIGURATION ---
-        // 1. Set the starting date for your "fake" history
-        const START_DATE = new Date(); 
-        START_DATE.setDate(START_DATE.getDate() - 5); // Start 5 days ago
-
-        // 2. Define the "base" balance to start with if it's a new user
         const INITIAL_BALANCE = 0.01428000;
-        
-        // --- MEMORY SYSTEM (LocalStorage) ---
-        
-        // Load Balance from Memory (or use default)
         let savedBalance = localStorage.getItem('alphaFundBalance');
         let currentBalance = savedBalance ? parseFloat(savedBalance) : INITIAL_BALANCE;
-
-        // Load Payout History from Memory (or create default)
         let savedHistory = localStorage.getItem('alphaFundHistory');
         let payoutHistory = savedHistory ? JSON.parse(savedHistory) : generateDefaultHistory();
 
-        // --- FUNCTIONS ---
+        // CHECK FOR ADMIN MODE IN THE URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            document.getElementById('admin-reset').classList.remove('hidden');
+        }
 
-        // 1. Generate Fake History (Only runs on first visit)
         function generateDefaultHistory() {
             let history = [];
             for(let i=0; i<5; i++) {
                 let d = new Date();
                 d.setDate(d.getDate() - i);
                 history.push({
-                    date: d.toISOString().split('T')[0] + " 00:05:00",
+                    date: d.toISOString().replace('T', ' ').substring(0, 19),
                     amount: (0.00210 + (Math.random() * 0.00010)).toFixed(8)
                 });
             }
             return history;
         }
 
-        // 2. Render the Table
         function renderTable() {
             const tbody = document.getElementById('payout-table-body');
-            tbody.innerHTML = ''; // Clear current rows
-            
+            tbody.innerHTML = '';
             payoutHistory.forEach(row => {
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-white/5 transition";
@@ -172,50 +142,34 @@
             });
         }
 
-        // 3. Save Everything to Phone Memory
         function saveData() {
             localStorage.setItem('alphaFundBalance', currentBalance.toFixed(8));
             localStorage.setItem('alphaFundHistory', JSON.stringify(payoutHistory));
         }
 
-        // 4. Live Updates (The "Moving Digits")
         function updateLoop() {
-            // A. Wiggle the Hashrate
             let wobble = (Math.random() * 10) - 5;
             let currentHash = (400 + wobble).toFixed(1);
             document.getElementById('hashrate-display').innerText = currentHash + " TH/s";
 
-            // B. Tick the Balance Up (Tiny amounts constantly)
             currentBalance += 0.00000001; 
             document.getElementById('balance-display').innerText = currentBalance.toFixed(8);
-            
-            // Save every tick so refresh remembers exactly where it was
             saveData();
         }
 
-        // 5. Simulate a "Big Payout" every 60 seconds (for demo purposes)
         setInterval(() => {
             let newAmount = (0.00210 + (Math.random() * 0.00010)).toFixed(8);
             let now = new Date().toISOString().replace('T', ' ').substring(0, 19);
-            
-            // Add to top of history
             payoutHistory.unshift({ date: now, amount: newAmount });
-            
-            // Keep list clean (max 10 rows)
             if(payoutHistory.length > 10) payoutHistory.pop();
-            
-            // Add big chunk to balance
             currentBalance += parseFloat(newAmount);
-            
             renderTable();
             saveData();
-        }, 60000); // Runs every 60 seconds
+        }, 60000);
 
-        // --- INIT ---
-        renderTable(); // Show table immediately
-        setInterval(updateLoop, 2000); // Update numbers every 2s
+        renderTable();
+        setInterval(updateLoop, 2000);
 
-        // Helper to reset if you want to show a different friend from scratch
         window.resetSimulation = function() {
             localStorage.clear();
             location.reload();

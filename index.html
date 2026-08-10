@@ -134,11 +134,12 @@
     <!-- MAIN SOFTWARE COMPUTATION LOGIC -->
     <script>
         // CORE CONFIGURATIONS
-        const ACCRUAL_RATE_PER_SECOND = 0.0000000002; // Simulated accrual per second
+        const ACCRUAL_RATE_PER_SECOND = 0.0000000002; // Amount of BTC earned per second (~0.001728 BTC/day)
         const BASELINE_START_AMOUNT = 0.01428000;
-        const TARGET_HASHRATE = 400.0; // Target for 2x Antminer S21s
+        const TARGET_HASHRATE = 400.0; // Baseline hash rate for 2x Antminer S21 units
+        const TWENTY_FOUR_HOURS_SEC = 86400; // 24 hours in seconds
 
-        // VERIFY URL PARAMETERS FOR ACCESS
+        // VERIFY URL PARAMETERS FOR ACCESS (?admin=true)
         const urlParams = new URLSearchParams(window.location.search);
         const isAdmin = urlParams.get('admin') === 'true';
 
@@ -171,17 +172,51 @@
             payoutHistory = generateStaticBacklog();
         }
 
+        // Generate initial historical 24-hour payouts for display
         function generateStaticBacklog() {
             let logs = [];
-            for(let i = 0; i < 4; i++) {
+            for (let i = 0; i < 4; i++) {
                 let d = new Date();
                 d.setDate(d.getDate() - i);
                 logs.push({
                     date: d.toISOString().replace('T', ' ').substring(0, 19),
-                    amount: (0.002114 + (Math.random() * 0.000085)).toFixed(8)
+                    amount: (0.001728 + (Math.random() * 0.000085 - 0.000042)).toFixed(8)
                 });
             }
             return logs;
+        }
+
+        // AUTOMATIC 24-HOUR PAYOUT CHECKER
+        function checkAndTriggerDailyPayout() {
+            let lastPayoutTime = localStorage.getItem('alpha_btc_last_payout');
+            let now = Math.floor(Date.now() / 1000);
+
+            if (!lastPayoutTime) {
+                localStorage.setItem('alpha_btc_last_payout', now.toString());
+                return;
+            }
+
+            // Check if 24 hours (86,400 seconds) have elapsed
+            if (now - parseInt(lastPayoutTime) >= TWENTY_FOUR_HOURS_SEC) {
+                // Calculate 24 hours of earnings with slight random difficulty fluctuation
+                let dailyYield = (ACCRUAL_RATE_PER_SECOND * TWENTY_FOUR_HOURS_SEC * (0.98 + Math.random() * 0.04)).toFixed(8);
+                
+                // Add new daily settlement to the top of the list
+                payoutHistory.unshift({
+                    date: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                    amount: dailyYield
+                });
+
+                // Keep the last 30 daily payouts
+                if (payoutHistory.length > 30) {
+                    payoutHistory.pop();
+                }
+
+                // Update local storage and re-render the ledger table
+                localStorage.setItem('alpha_btc_last_payout', now.toString());
+                localStorage.setItem('alpha_btc_hist', JSON.stringify(payoutHistory));
+                renderLedger();
+            }
         }
 
         // RENDER LEDGER TABLE
@@ -201,12 +236,13 @@
             });
         }
 
-        // REAL-TIME UPDATES
+        // REAL-TIME UPDATES (RUNS EVERY SECOND)
         function tick() {
+            // 1. Accrue live balance
             currentBalance += ACCRUAL_RATE_PER_SECOND;
             document.getElementById('balance-display').innerText = currentBalance.toFixed(8);
 
-            // Simulate minor natural hashrate variance (e.g. 392.5 TH/s - 408.0 TH/s)
+            // 2. Simulate natural hash rate fluctuations
             let variance = (Math.random() * 16 - 8);
             let currentHashrate = (TARGET_HASHRATE + variance).toFixed(1);
             document.getElementById('hashrate-display').innerText = `${currentHashrate} TH/s`;
@@ -214,7 +250,10 @@
             let percentage = Math.min(100, Math.max(10, (currentHashrate / 420) * 100));
             document.getElementById('hashrate-bar').style.width = `${percentage}%`;
 
-            // Save state
+            // 3. Check for 24-hour payout threshold
+            checkAndTriggerDailyPayout();
+
+            // 4. Save state to preserve progress on refresh
             localStorage.setItem('alpha_btc_bal', currentBalance.toFixed(8));
             localStorage.setItem('alpha_btc_time', Math.floor(Date.now() / 1000).toString());
             localStorage.setItem('alpha_btc_hist', JSON.stringify(payoutHistory));
@@ -233,12 +272,13 @@
             localStorage.removeItem('alpha_btc_bal');
             localStorage.removeItem('alpha_btc_time');
             localStorage.removeItem('alpha_btc_hist');
+            localStorage.removeItem('alpha_btc_last_payout');
             currentBalance = BASELINE_START_AMOUNT;
             payoutHistory = generateStaticBacklog();
             renderLedger();
         }
 
-        // INITIALIZE
+        // INITIALIZE DASHBOARD
         renderLedger();
         setInterval(tick, 1000);
     </script>

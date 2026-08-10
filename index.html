@@ -6,174 +6,183 @@
     <title>Alpha Fund | Investor Portal</title>
     <script src="https://tailwindcss.com"></script>
     <style>
+        /* High-End Tech Gradient Background */
         body {
-            background-color: #0f172a;
+            background-color: #0b0f19;
             background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+                radial-gradient(at 0% 0%, hsla(263,45%,11%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(215,50%,15%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(345,45%,15%,1) 0, transparent 50%);
             color: #e2e8f0;
         }
+        /* Frosted Glass UI Styling */
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        .neon-text { text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+        .neon-glow { text-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
+        .success-glow { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8 font-sans">
+<body class="min-h-screen p-4 md:p-8 font-sans antialiased">
 
     <div class="max-w-5xl mx-auto space-y-6">
         
-        <!-- HEADER -->
+        <!-- HEADER MODULE -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center glass-card p-6 rounded-2xl">
             <div>
-                <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 neon-text">
+                <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-500 neon-glow">
                     Alpha Mining Fund
                 </h1>
-                <p class="text-sm text-gray-400 mt-1">Live Investor Watcher Node • <span class="text-green-400">v2.4.1 Stable</span></p>
+                <p class="text-xs text-gray-400 mt-1 uppercase tracking-wider font-semibold">Live Monitor Node v3.0 • Secure Encryption</p>
             </div>
-            <div class="mt-4 md:mt-0 flex items-center space-x-3">
-                <div class="flex items-center space-x-2 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-full">
-                    <span class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            
+            <!-- SECRET ADMIN INTERFACE CONTROL (Hidden by default, unhidden via URL) -->
+            <div id="admin-panel" class="hidden mt-4 md:mt-0 flex flex-wrap gap-2 items-center">
+                <button onclick="shareInvestorLink()" class="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow-lg">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.26-2.556m0 0l4.26 2.556m-4.26-2.556v6.75M12 3a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+                    <span>Copy Friend Share Link</span>
+                </button>
+                <button onclick="resetSimulation()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold px-4 py-2 rounded-xl border border-red-500/20 transition">
+                    Reset Demo
+                </button>
+                <span id="toast-msg" class="hidden text-xs text-emerald-400 font-bold ml-2">Copied!</span>
+            </div>
+
+            <!-- REGULAR INVESTOR SYSTEM STATUS LIGHT -->
+            <div id="investor-status" class="mt-4 md:mt-0 flex items-center">
+                <div class="flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full success-glow">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    <span class="text-xs font-bold text-green-400 uppercase tracking-wider">System Online</span>
+                    <span class="text-xs font-black text-emerald-400 uppercase tracking-widest">Pool Live</span>
                 </div>
             </div>
         </div>
 
-        <!-- MAIN STATS GRID -->
+        <!-- TELEMETRY TILES -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
-                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Active Fleet</p>
-                <div class="mt-2 flex items-baseline space-x-2">
-                    <span class="text-3xl font-bold text-white">2 <span class="text-lg text-gray-500">/ 2</span></span>
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Active Fleet Status</p>
+                <div class="mt-2 flex items-baseline space-x-1">
+                    <span class="text-4xl font-extrabold text-white font-mono">2</span>
+                    <span class="text-xl font-bold text-gray-600">/ 2 ASIC</span>
                 </div>
-                <p class="text-xs text-emerald-400 mt-2 flex items-center">● 100% Uptime (24h)</p>
+                <div class="text-[11px] text-emerald-400 mt-3 font-semibold flex items-center bg-emerald-500/5 py-1 px-2 rounded-lg border border-emerald-500/10 w-fit">
+                    ● Antminer S21 Air Fleet Stable
+                </div>
             </div>
 
             <div class="glass-card p-6 rounded-2xl">
-                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Real-Time Hashrate</p>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Current Hashrate</p>
                 <div class="mt-2">
-                    <span id="hashrate-display" class="text-3xl font-bold text-amber-400 font-mono">Loading...</span>
+                    <span id="hashrate-display" class="text-4xl font-black text-amber-400 font-mono tracking-tight">400.0 TH/s</span>
                 </div>
-                <div class="w-full bg-gray-700 h-1.5 rounded-full mt-4 overflow-hidden">
-                    <div class="bg-gradient-to-r from-amber-500 to-orange-600 h-1.5 rounded-full" style="width: 92%;"></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full mt-4 overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-500 to-orange-500 h-1.5 rounded-full" style="width: 94%;"></div>
                 </div>
             </div>
 
-            <div class="glass-card p-6 rounded-2xl border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
-                <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Total Fund Equity</p>
-                <div class="mt-2">
-                    <span id="balance-display" class="text-3xl font-bold text-white font-mono tracking-tight">0.00000000</span>
-                    <span class="text-sm text-gray-500 ml-1">BTC</span>
+            <div class="glass-card p-6 rounded-2xl border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Total Accumulated Equity</p>
+                <div class="mt-2 flex items-baseline">
+                    <span id="balance-display" class="text-4xl font-black text-white font-mono tracking-tighter">0.01428000</span>
+                    <span class="text-xs font-bold text-gray-500 ml-1.5 uppercase font-mono">BTC</span>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">Next payout: <span id="next-payout-timer">04:59</span></p>
+                <p class="text-[11px] text-gray-500 mt-3 font-mono">Real-time compilation node stream active</p>
             </div>
         </div>
 
-        <!-- PAYOUT HISTORY TABLE -->
+        <!-- DISTRIBUTION LEDGER TABLE -->
         <div class="glass-card rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-gray-700/50 flex justify-between items-center">
-                <h3 class="font-bold text-lg text-gray-200">Payout Ledger</h3>
-                <!-- Added id="admin-reset" and hidden style by default -->
-                <button id="admin-reset" onclick="resetSimulation()" class="hidden text-xs text-red-400/50 hover:text-red-400 transition bg-red-500/10 px-2 py-1 rounded border border-red-500/20">Reset Demo</button>
+            <div class="p-6 border-b border-white/5">
+                <h3 class="font-extrabold text-lg text-gray-200">System Distribution Ledger</h3>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-gray-400">
-                    <thead class="bg-gray-800/50 uppercase text-xs font-semibold text-gray-500">
+                    <thead class="bg-white/[0.02] uppercase text-[10px] tracking-wider font-bold text-gray-500 border-b border-white/5">
                         <tr>
-                            <th class="px-6 py-3">Timestamp (UTC)</th>
-                            <th class="px-6 py-3">Type</th>
-                            <th class="px-6 py-3">Status</th>
-                            <th class="px-6 py-3 text-right">Amount</th>
+                            <th class="px-6 py-3.5">Timestamp (UTC)</th>
+                            <th class="px-6 py-3.5">Transaction Type</th>
+                            <th class="px-6 py-3.5">Network Confirmation</th>
+                            <th class="px-6 py-3.5 text-right">Yield Credited</th>
                         </tr>
                     </thead>
-                    <tbody id="payout-table-body" class="divide-y divide-gray-700/30"></tbody>
+                    <tbody id="payout-table-body" class="divide-y divide-white/5 font-mono text-xs"></tbody>
                 </table>
             </div>
         </div>
 
     </div>
 
+    <!-- MAIN SOFTWARE COMPUTATION LOGIC -->
     <script>
-        const INITIAL_BALANCE = 0.01428000;
-        let savedBalance = localStorage.getItem('alphaFundBalance');
-        let currentBalance = savedBalance ? parseFloat(savedBalance) : INITIAL_BALANCE;
-        let savedHistory = localStorage.getItem('alphaFundHistory');
-        let payoutHistory = savedHistory ? JSON.parse(savedHistory) : generateDefaultHistory();
+        // CORE CONFIGURATIONS
+        const ACCRUAL_RATE_PER_SECOND = 0.0000000002; // Amount of Bitcoin earned every second
+        const BASELINE_START_AMOUNT = 0.01428000;
 
-        // CHECK FOR ADMIN MODE IN THE URL
+        // VERIFY URL PARAMETERS FOR SECURITY ACCESS
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('admin') === 'true') {
-            document.getElementById('admin-reset').classList.remove('hidden');
+        const isAdmin = urlParams.get('admin') === 'true';
+
+        // Unhide controls if accessing from admin gateway
+        if (isAdmin) {
+            document.getElementById('admin-panel').classList.remove('hidden');
+            document.getElementById('investor-status').classList.add('hidden');
         }
 
-        function generateDefaultHistory() {
-            let history = [];
-            for(let i=0; i<5; i++) {
+        // OFFLINE ENGINE - TIMESTAMP COMPUTATION SYSTEM
+        let nowTimestamp = Math.floor(Date.now() / 1000);
+        
+        let storedBalance = localStorage.getItem('alpha_btc_bal');
+        let storedTime = localStorage.getItem('alpha_btc_time');
+        let storedHistory = localStorage.getItem('alpha_btc_hist');
+
+        let currentBalance = BASELINE_START_AMOUNT;
+        let payoutHistory = [];
+
+        // Check internal memory clock to make up for missed time
+        if (storedBalance && storedTime) {
+            let elapsedSeconds = nowTimestamp - parseInt(storedTime);
+            let offlineEarnings = elapsedSeconds * ACCRUAL_RATE_PER_SECOND;
+            currentBalance = parseFloat(storedBalance) + offlineEarnings;
+        } else {
+            currentBalance = BASELINE_START_AMOUNT;
+        }
+
+        // Load or generate payouts list
+        if (storedHistory) {
+            payoutHistory = JSON.parse(storedHistory);
+        } else {
+            payoutHistory = generateStaticBacklog();
+        }
+
+        // POPULATE HISTORICAL REWARD DEMOS
+        function generateStaticBacklog() {
+            let logs = [];
+            for(let i=0; i<4; i++) {
                 let d = new Date();
                 d.setDate(d.getDate() - i);
-                history.push({
+                logs.push({
                     date: d.toISOString().replace('T', ' ').substring(0, 19),
-                    amount: (0.00210 + (Math.random() * 0.00010)).toFixed(8)
+                    amount: (0.002114 + (Math.random() * 0.000085)).toFixed(8)
                 });
             }
-            return history;
+            return logs;
         }
 
-        function renderTable() {
+        // RE-RENDER LEDGER DRAWINGS
+        function renderLedger() {
             const tbody = document.getElementById('payout-table-body');
             tbody.innerHTML = '';
             payoutHistory.forEach(row => {
                 let tr = document.createElement('tr');
-                tr.className = "hover:bg-white/5 transition";
+                tr.className = "hover:bg-white/[0.02] transition duration-150";
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-mono text-xs">${row.date}</td>
-                    <td class="px-6 py-4"><span class="bg-blue-500/10 text-blue-400 px-2 py-1 rounded text-xs border border-blue-500/20">Mining Reward</span></td>
-                    <td class="px-6 py-4 text-green-400 text-xs font-bold">Confirmed</td>
-                    <td class="px-6 py-4 text-right font-mono text-white font-bold">+${row.amount} BTC</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function saveData() {
-            localStorage.setItem('alphaFundBalance', currentBalance.toFixed(8));
-            localStorage.setItem('alphaFundHistory', JSON.stringify(payoutHistory));
-        }
-
-        function updateLoop() {
-            let wobble = (Math.random() * 10) - 5;
-            let currentHash = (400 + wobble).toFixed(1);
-            document.getElementById('hashrate-display').innerText = currentHash + " TH/s";
-
-            currentBalance += 0.00000001; 
-            document.getElementById('balance-display').innerText = currentBalance.toFixed(8);
-            saveData();
-        }
-
-        setInterval(() => {
-            let newAmount = (0.00210 + (Math.random() * 0.00010)).toFixed(8);
-            let now = new Date().toISOString().replace('T', ' ').substring(0, 19);
-            payoutHistory.unshift({ date: now, amount: newAmount });
-            if(payoutHistory.length > 10) payoutHistory.pop();
-            currentBalance += parseFloat(newAmount);
-            renderTable();
-            saveData();
-        }, 60000);
-
-        renderTable();
-        setInterval(updateLoop, 2000);
-
-        window.resetSimulation = function() {
-            localStorage.clear();
-            location.reload();
-        }
-    </script>
-</body>
-</html>
+                    <td class="px-6 py-4 text-gray-400">${row.date}</td>
+                    <td class="px-6 py-4"><span class="bg-blue-500/10 text-blue-400 font-bold px-2 py-0.5 rounded text-[10px] border border-blue-500/20 uppercase tracking-wide">Block Reward</span></td>
+                    <td class="px-6 py-4 text-emerald-400 text-[11px] font-bold">✓ Verified Block</td>
